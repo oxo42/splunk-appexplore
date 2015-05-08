@@ -1,0 +1,7 @@
+<nav search_view="search" color="#157db9">
+  <view name="search" />
+  <collection label="Views">
+	<view source="unclassified" />
+  </collection>
+  <view name="dashboards" />
+</nav>

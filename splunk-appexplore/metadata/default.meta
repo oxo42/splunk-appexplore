@@ -1,0 +1,4 @@
+[views]
+access = read : [ * ], write: [ admin ]
+export = system
+owner = admin
