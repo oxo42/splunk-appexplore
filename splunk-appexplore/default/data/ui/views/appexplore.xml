@@ -15,11 +15,11 @@
 				<search>
 					<query>
 						<![CDATA[
-| rest splunk_server=local count=0 /servicesNS/-/-/configs/conf-eventtypes 
+| rest splunk_server=local count=0 /servicesNS/-/-/configs/conf-eventtypes
 | rename eai:appName as app
 | eval [| rest /services/search/jobs count=0 splunk_server=local | addinfo | where sid=info_sid | rename eai:acl.app as current_app | return current_app]
 $localFilter$
-| table app title description search 
+| fields app author title description search
 ]]>
 					</query>
 					<earliest>0</earliest>
@@ -27,13 +27,11 @@ $localFilter$
 				</search>
 				<option name="wrap">true</option>
 				<option name="rowNumbers">false</option>
-				<option name="drilldown">cell</option>
+				<option name="drilldown">none</option>
 				<option name="dataOverlayMode">none</option>
 				<option name="count">10</option>
 			</table>
 		</panel>
-	</row>
-	<row>
 		<panel>
 			<title>Search Macros</title>
 			<table>
@@ -52,17 +50,15 @@ $localFilter$
 				</search>
 				<option name="wrap">true</option>
 				<option name="rowNumbers">false</option>
-				<option name="drilldown">cell</option>
+				<option name="drilldown">none</option>
 				<option name="dataOverlayMode">none</option>
 				<option name="count">10</option>
 			</table>
 		</panel>
-	</row>
-	<row>
 		<panel>
-			<title>Field Extractions</title>
+			<title>Sourcetypes</title>
 			<table>
-				<title>Extracted from props.conf</title>
+				<title>Click a sourcetype to drill down</title>
 				<search>
 					<query>
 						<![CDATA[
@@ -70,6 +66,35 @@ $localFilter$
 | rename eai:appName as app
 | eval [| rest /services/search/jobs count=0 splunk_server=local | addinfo | where sid=info_sid | rename eai:acl.app as current_app | return current_app]
 $localFilter$
+| stats count list(description) as description by title
+| rename title AS sourcetype
+| fields sourcetype description
+]]>
+					</query>
+					<earliest>0</earliest>
+					<latest/>
+				</search>
+				<option name="wrap">true</option>
+				<option name="rowNumbers">false</option>
+				<option name="drilldown">row</option>
+				<option name="dataOverlayMode">none</option>
+				<option name="count">10</option>
+				<drilldown>
+					<set token="sourcetype">$row.sourcetype$</set>
+				</drilldown>
+			</table>
+		</panel>
+	</row>
+	<row>
+		<panel depends="$sourcetype$">
+			<title>Field Extractions</title>
+			<table>
+				<title>sourcetype=$sourcetype$</title>
+				<search>
+					<query>
+						<![CDATA[
+| rest splunk_server=local count=0 /servicesNS/-/-/configs/conf-props
+| search title="$sourcetype$"
 | transpose
 | rename "row 1" as value
 | search column="EXTRACT-*" value=*
@@ -81,26 +106,50 @@ $localFilter$
 				</search>
 				<option name="wrap">true</option>
 				<option name="rowNumbers">false</option>
-				<option name="drilldown">cell</option>
+				<option name="drilldown">none</option>
 				<option name="dataOverlayMode">none</option>
 				<option name="count">10</option>
 			</table>
 		</panel>
-		<panel>
+		<panel depends="$sourcetype$">
 			<title>Field Aliases</title>
 			<table>
-				<title>Extracted from props.conf</title>
+				<title>sourcetype=$sourcetype$</title>
 				<search>
 					<query>
 						<![CDATA[
 | rest splunk_server=local count=0 /servicesNS/-/-/configs/conf-props
-| rename eai:appName as app
-| eval [| rest /services/search/jobs count=0 splunk_server=local | addinfo | where sid=info_sid | rename eai:acl.app as current_app | return current_app]
-$localFilter$
+| search title="$sourcetype$"
 | transpose
 | rename "row 1" as value
 | search column="FIELDALIAS-*" value=*
 | rename column as alias
+]]>
+					</query>
+					<earliest>0</earliest>
+					<latest/>
+				</search>
+				<option name="wrap">true</option>
+				<option name="rowNumbers">false</option>
+				<option name="drilldown">none</option>
+				<option name="dataOverlayMode">none</option>
+				<option name="count">10</option>
+			</table>
+		</panel>
+		<panel depends="$sourcetype$">
+			<title>Lookups</title>
+			<table>
+				<title>sourcetype=$sourcetype$</title>
+				<search>
+					<query>
+						<![CDATA[
+| rest splunk_server=local count=0 /servicesNS/-/-/configs/conf-props
+| search title="$sourcetype$"
+| transpose
+| rename "row 1" as value
+| search column="LOOKUP-*" value=*
+| rename column as lookup
+| fields lookup value
 ]]>
 					</query>
 					<earliest>0</earliest>
@@ -114,4 +163,5 @@ $localFilter$
 			</table>
 		</panel>
 	</row>
+
 </form>
