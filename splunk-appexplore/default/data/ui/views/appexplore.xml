@@ -1,5 +1,6 @@
 <form>
-	<label>Documentation Board</label>
+	<label>App Explore</label>
+	<description>Explore the various properties for this application</description>
 	<fieldset submitButton="false">
 		<input type="radio" token="localFilter" searchWhenChanged="true">
 			<label>Local</label>
