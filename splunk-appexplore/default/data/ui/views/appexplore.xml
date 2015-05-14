@@ -1,4 +1,4 @@
-<form>
+<form script="tabs.js" stylesheet="tabs.css">
 	<label>App Explore</label>
 	<description>Explore the various properties for this application</description>
 	<fieldset submitButton="false">
@@ -9,7 +9,24 @@
 			<default>| where app=current_app</default>
 		</input>
 	</fieldset>
-	<row>
+	<row id="tabs">
+		<panel>
+			<html>
+				<ul id="tabs" class="nav nav-tabs">
+					<li class="active">
+						<a href="#" class="toggle-tab" data-toggle="tab" data-elements="tab_event_types" data-token="control_token_event_types">Event Types</a>
+					</li>
+					<li>
+						<a href="#" class="toggle-tab" data-toggle="tab" data-elements="tab_macros" data-token="control_token_macros">Search Macros</a>
+					</li>
+					<li>
+						<a href="#" class="toggle-tab" data-toggle="tab" data-elements="tab_sourcetypes,tab_sourcetypes_detail" data-token="control_token_sourcetypes">Sourcetypes</a>
+					</li>
+				</ul>
+			</html>
+		</panel>
+	</row>
+	<row id="tab_event_types">
 		<panel>
 			<title>Event types</title>
 			<table>
@@ -33,6 +50,8 @@ $localFilter$
 				<option name="count">10</option>
 			</table>
 		</panel>
+	</row>
+	<row id="tab_macros">
 		<panel>
 			<title>Search Macros</title>
 			<table>
@@ -56,6 +75,8 @@ $localFilter$
 				<option name="count">10</option>
 			</table>
 		</panel>
+	</row>
+	<row id="tab_sourcetypes">
 		<panel>
 			<title>Sourcetypes</title>
 			<table>
@@ -86,7 +107,7 @@ $localFilter$
 			</table>
 		</panel>
 	</row>
-	<row>
+	<row id="tab_sourcetypes_detail">
 		<panel depends="$sourcetype$">
 			<title>Field Extractions</title>
 			<table>
@@ -164,5 +185,4 @@ $localFilter$
 			</table>
 		</panel>
 	</row>
-
 </form>
